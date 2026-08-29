@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Decotech</title>
+<link rel="icon" href="public/decotech-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0e14;
+    --card-bg: #151922;
+    --border: #222733;
+    --text: #ffffff;
+    --muted: #94a3b8;
+    --accent: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  header {
+    padding: 40px 24px 28px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  header .logo {
+    height: 56px;
+    margin-bottom: 16px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+    letter-spacing: -0.02em;
+  }
+  header p {
+    color: var(--muted);
+    margin-top: 8px;
+  }
+  nav.toc {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    border-bottom: 1px solid var(--border);
+  }
+  nav.toc a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+    white-space: nowrap;
+  }
+  nav.toc a:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+  nav.toc .count {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+    scroll-behavior: smooth;
+  }
+  .project { margin-bottom: 56px; scroll-margin-top: 16px; }
+  .project h2 {
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .project h2 .count {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .grid .thumb {
+    width: 100%;
+    height: 200px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .grid .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.2s ease;
+  }
+  .grid .thumb:hover img {
+    transform: scale(1.06);
+  }
+  .grid .thumb:hover {
+    border-color: var(--accent);
+  }
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    margin-top: 80px;
+  }
+  #lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  #lightbox.open { display: flex; }
+  #lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+  }
+  #lightbox .nav-btn {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 15%;
+    min-width: 56px;
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 2.5rem;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+  #lightbox .nav-btn:hover { color: #fff; }
+  #lightbox .nav-prev { left: 0; justify-content: flex-start; padding-left: 12px; }
+  #lightbox .nav-next { right: 0; justify-content: flex-end; padding-right: 12px; }
+  #lightbox .close-btn {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  #lightbox .close-btn:hover { color: #fff; }
+  #lightbox .counter {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.9rem;
+  }
+  #gate {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  #gate.hidden { display: none; }
+  #gate .box {
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+  }
+  #gate .logo {
+    height: 56px;
+    margin-bottom: 20px;
+  }
+  #gate h1 {
+    font-size: 1.4rem;
+    margin: 0 0 8px;
+  }
+  #gate p {
+    color: var(--muted);
+    margin: 0 0 24px;
+    font-size: 0.9rem;
+  }
+  #gate input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 1rem;
+    text-align: center;
+    outline: none;
+  }
+  #gate input:focus { border-color: var(--accent); }
+  #gate button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #1a1200;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  #gate .error {
+    color: #f87171;
+    font-size: 0.85rem;
+    margin-top: 12px;
+    min-height: 1em;
+  }
+  #site.hidden { display: none; }
+</style>
+</head>
+<body>
+  <div id="gate">
+    <div class="box">
+      <img class="logo" src="public/decotech-logo.png" alt="Decotech">
+      <h1>Decotech</h1>
+      <p>Bu galeri musterilere ozeldir. Devam etmek icin sifreyi girin.</p>
+      <input type="password" id="gate-pass" placeholder="Sifre" autocomplete="off">
+      <button onclick="tryUnlock()">Girin</button>
+      <p class="error" id="gate-error"></p>
+    </div>
+  </div>
+
+  <div id="site" class="hidden">
+    <header>
+      <img class="logo" src="public/decotech-logo.png" alt="Decotech">
+      <h1>Decotech</h1>
+      <p>Proje Portfoyu</p>
+    </header>
+    <nav class="toc"><a href="#proj-0">Ahşap Ev Projemiz <span class="count">5</span></a>
+<a href="#proj-1">Almanya Munic <span class="count">8</span></a>
+<a href="#proj-2">Almaty <span class="count">85</span></a>
+<a href="#proj-3">Avukatlik Ofis <span class="count">19</span></a>
+<a href="#proj-4">Bebek Villa <span class="count">30</span></a>
+<a href="#proj-5">Ciftlik Referans <span class="count">23</span></a>
+<a href="#proj-6">Duvar Panel Calismalari <span class="count">11</span></a>
+<a href="#proj-7">Goztepe Villasi <span class="count">14</span></a>
+<a href="#proj-8">Karamursel <span class="count">38</span></a>
+<a href="#proj-9">Karbosan <span class="count">14</span></a>
+<a href="#proj-10">Lokumhane <span class="count">30</span></a>
+<a href="#proj-11">Zurich <span class="count">16</span></a></nav>
+    <main>
+      
+      <section class="project" id="proj-0">
+        <h2>Ahşap Ev Projemiz <span class="count">5 gorsel</span></h2>
+        <div class="grid" data-group="0"></div>
+      </section>
+
+      <section class="project" id="proj-1">
+        <h2>Almanya Munic <span class="count">8 gorsel</span></h2>
+        <div class="grid" data-group="1"></div>
+      </section>
+
+      <section class="project" id="proj-2">
+        <h2>Almaty <span class="count">85 gorsel</span></h2>
+        <div class="grid" data-group="2"></div>
+      </section>
+
+      <section class="project" id="proj-3">
+        <h2>Avukatlik Ofis <span class="count">19 gorsel</span></h2>
+        <div class="grid" data-group="3"></div>
+      </section>
+
+      <section class="project" id="proj-4">
+        <h2>Bebek Villa <span class="count">30 gorsel</span></h2>
+        <div class="grid" data-group="4"></div>
+      </section>
+
+      <section class="project" id="proj-5">
+        <h2>Ciftlik Referans <span class="count">23 gorsel</span></h2>
+        <div class="grid" data-group="5"></div>
+      </section>
+
+      <section class="project" id="proj-6">
+        <h2>Duvar Panel Calismalari <span class="count">11 gorsel</span></h2>
+        <div class="grid" data-group="6"></div>
+      </section>
+
+      <section class="project" id="proj-7">
+        <h2>Goztepe Villasi <span class="count">14 gorsel</span></h2>
+        <div class="grid" data-group="7"></div>
+      </section>
+
+      <section class="project" id="proj-8">
+        <h2>Karamursel <span class="count">38 gorsel</span></h2>
+        <div class="grid" data-group="8"></div>
+      </section>
+
+      <section class="project" id="proj-9">
+        <h2>Karbosan <span class="count">14 gorsel</span></h2>
+        <div class="grid" data-group="9"></div>
+      </section>
+
+      <section class="project" id="proj-10">
+        <h2>Lokumhane <span class="count">30 gorsel</span></h2>
+        <div class="grid" data-group="10"></div>
+      </section>
+
+      <section class="project" id="proj-11">
+        <h2>Zurich <span class="count">16 gorsel</span></h2>
+        <div class="grid" data-group="11"></div>
+      </section>
+    </main>
+    <div id="lightbox" onclick="if (event.target === this) closeLightbox()">
+      <span class="counter" id="lightbox-counter"></span>
+      <button class="close-btn" onclick="closeLightbox()">&times;</button>
+      <button class="nav-btn nav-prev" onclick="stepLightbox(-1)">&#8249;</button>
+      <img id="lightbox-img" src="">
+      <button class="nav-btn nav-next" onclick="stepLightbox(1)">&#8250;</button>
+    </div>
+  </div>
+
+  <script>
+    const galleries = [[{"thumb":"thumbs/AH%C5%9EAP_EV_PROJEM%C4%B0Z/IMG-20170522-WA0012.webp","full":"full/AH%C5%9EAP_EV_PROJEM%C4%B0Z/IMG-20170522-WA0012.webp"},{"thumb":"thumbs/AH%C5%9EAP_EV_PROJEM%C4%B0Z/IMG-20170704-WA0021(1).webp","full":"full/AH%C5%9EAP_EV_PROJEM%C4%B0Z/IMG-20170704-WA0021(1).webp"},{"thumb":"thumbs/AH%C5%9EAP_EV_PROJEM%C4%B0Z/IMG-20170704-WA0021.webp","full":"full/AH%C5%9EAP_EV_PROJEM%C4%B0Z/IMG-20170704-WA0021.webp"},{"thumb":"thumbs/AH%C5%9EAP_EV_PROJEM%C4%B0Z/IMG-20170704-WA0033(1).webp","full":"full/AH%C5%9EAP_EV_PROJEM%C4%B0Z/IMG-20170704-WA0033(1).webp"},{"thumb":"thumbs/AH%C5%9EAP_EV_PROJEM%C4%B0Z/IMG-20170704-WA0033.webp","full":"full/AH%C5%9EAP_EV_PROJEM%C4%B0Z/IMG-20170704-WA0033.webp"}],[{"thumb":"thumbs/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.05%20(2).webp","full":"full/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.05%20(2).webp"},{"thumb":"thumbs/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.05.webp","full":"full/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.05.webp"},{"thumb":"thumbs/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.06%20(1).webp","full":"full/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.06%20(1).webp"},{"thumb":"thumbs/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.06%20(2).webp","full":"full/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.06%20(2).webp"},{"thumb":"thumbs/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.06%20(3).webp","full":"full/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.06%20(3).webp"},{"thumb":"thumbs/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.06%20(4).webp","full":"full/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.06%20(4).webp"},{"thumb":"thumbs/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.06.webp","full":"full/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.06.webp"},{"thumb":"thumbs/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.07.webp","full":"full/ALMANYA_MUNIC/WhatsApp%20Image%202019-05-09%20at%2017.27.07.webp"}],[{"thumb":"thumbs/ALMATY/IMG-20190314-WA0034(1).webp","full":"full/ALMATY/IMG-20190314-WA0034(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190314-WA0034.webp","full":"full/ALMATY/IMG-20190314-WA0034.webp"},{"thumb":"thumbs/ALMATY/IMG-20190314-WA0044(1).webp","full":"full/ALMATY/IMG-20190314-WA0044(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190314-WA0044.webp","full":"full/ALMATY/IMG-20190314-WA0044.webp"},{"thumb":"thumbs/ALMATY/IMG-20190720-WA0000(1).webp","full":"full/ALMATY/IMG-20190720-WA0000(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190720-WA0001(1).webp","full":"full/ALMATY/IMG-20190720-WA0001(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190720-WA0002(1).webp","full":"full/ALMATY/IMG-20190720-WA0002(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190720-WA0003(1).webp","full":"full/ALMATY/IMG-20190720-WA0003(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190720-WA0004(1).webp","full":"full/ALMATY/IMG-20190720-WA0004(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190721-WA0001(1).webp","full":"full/ALMATY/IMG-20190721-WA0001(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190721-WA0002(1).webp","full":"full/ALMATY/IMG-20190721-WA0002(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190721-WA0004(1).webp","full":"full/ALMATY/IMG-20190721-WA0004(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190721-WA0007(1).webp","full":"full/ALMATY/IMG-20190721-WA0007(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190721-WA0010(1).webp","full":"full/ALMATY/IMG-20190721-WA0010(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190722-WA0006(1).webp","full":"full/ALMATY/IMG-20190722-WA0006(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190722-WA0007(1).webp","full":"full/ALMATY/IMG-20190722-WA0007(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190722-WA0008(1).webp","full":"full/ALMATY/IMG-20190722-WA0008(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190722-WA0009(1).webp","full":"full/ALMATY/IMG-20190722-WA0009(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190722-WA0010(1).webp","full":"full/ALMATY/IMG-20190722-WA0010(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190722-WA0011(1).webp","full":"full/ALMATY/IMG-20190722-WA0011(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190722-WA0012(1).webp","full":"full/ALMATY/IMG-20190722-WA0012(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0003(1).webp","full":"full/ALMATY/IMG-20190724-WA0003(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0004(1).webp","full":"full/ALMATY/IMG-20190724-WA0004(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0005(1).webp","full":"full/ALMATY/IMG-20190724-WA0005(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0006(1).webp","full":"full/ALMATY/IMG-20190724-WA0006(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0007(1).webp","full":"full/ALMATY/IMG-20190724-WA0007(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0008(1).webp","full":"full/ALMATY/IMG-20190724-WA0008(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0009(1).webp","full":"full/ALMATY/IMG-20190724-WA0009(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0010(1).webp","full":"full/ALMATY/IMG-20190724-WA0010(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0011(1).webp","full":"full/ALMATY/IMG-20190724-WA0011(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0012(1).webp","full":"full/ALMATY/IMG-20190724-WA0012(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0013(1).webp","full":"full/ALMATY/IMG-20190724-WA0013(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0024(1).webp","full":"full/ALMATY/IMG-20190724-WA0024(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0025(1).webp","full":"full/ALMATY/IMG-20190724-WA0025(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0026(1).webp","full":"full/ALMATY/IMG-20190724-WA0026(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0029(1).webp","full":"full/ALMATY/IMG-20190724-WA0029(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190724-WA0032(1).webp","full":"full/ALMATY/IMG-20190724-WA0032(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190725-WA0006(1).webp","full":"full/ALMATY/IMG-20190725-WA0006(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190725-WA0007(1).webp","full":"full/ALMATY/IMG-20190725-WA0007(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190725-WA0008(1).webp","full":"full/ALMATY/IMG-20190725-WA0008(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190725-WA0009(1).webp","full":"full/ALMATY/IMG-20190725-WA0009(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190725-WA0011(1).webp","full":"full/ALMATY/IMG-20190725-WA0011(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190725-WA0013(1).webp","full":"full/ALMATY/IMG-20190725-WA0013(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190725-WA0014(1).webp","full":"full/ALMATY/IMG-20190725-WA0014(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190725-WA0015(1).webp","full":"full/ALMATY/IMG-20190725-WA0015(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190725-WA0016(1).webp","full":"full/ALMATY/IMG-20190725-WA0016(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190725-WA0017(1).webp","full":"full/ALMATY/IMG-20190725-WA0017(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190725-WA0018(1).webp","full":"full/ALMATY/IMG-20190725-WA0018(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190725-WA0043(1).webp","full":"full/ALMATY/IMG-20190725-WA0043(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190726-WA0005(1).webp","full":"full/ALMATY/IMG-20190726-WA0005(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190726-WA0006(1).webp","full":"full/ALMATY/IMG-20190726-WA0006(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190726-WA0007(1).webp","full":"full/ALMATY/IMG-20190726-WA0007(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190726-WA0008(1).webp","full":"full/ALMATY/IMG-20190726-WA0008(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190726-WA0009(1).webp","full":"full/ALMATY/IMG-20190726-WA0009(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190730-WA0000(1).webp","full":"full/ALMATY/IMG-20190730-WA0000(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190730-WA0001(1).webp","full":"full/ALMATY/IMG-20190730-WA0001(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190730-WA0005(1).webp","full":"full/ALMATY/IMG-20190730-WA0005(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190730-WA0006(1).webp","full":"full/ALMATY/IMG-20190730-WA0006(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190731-WA0001(1).webp","full":"full/ALMATY/IMG-20190731-WA0001(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190731-WA0003(1).webp","full":"full/ALMATY/IMG-20190731-WA0003(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190731-WA0004(1).webp","full":"full/ALMATY/IMG-20190731-WA0004(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190731-WA0005(1).webp","full":"full/ALMATY/IMG-20190731-WA0005(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190731-WA0006(1).webp","full":"full/ALMATY/IMG-20190731-WA0006(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190731-WA0007(1).webp","full":"full/ALMATY/IMG-20190731-WA0007(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190731-WA0008(1).webp","full":"full/ALMATY/IMG-20190731-WA0008(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190801-WA0016(1).webp","full":"full/ALMATY/IMG-20190801-WA0016(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190801-WA0017(1).webp","full":"full/ALMATY/IMG-20190801-WA0017(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190801-WA0018(1).webp","full":"full/ALMATY/IMG-20190801-WA0018(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190801-WA0019(1).webp","full":"full/ALMATY/IMG-20190801-WA0019(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190801-WA0020(1).webp","full":"full/ALMATY/IMG-20190801-WA0020(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190801-WA0021(1).webp","full":"full/ALMATY/IMG-20190801-WA0021(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190801-WA0022(1).webp","full":"full/ALMATY/IMG-20190801-WA0022(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190916-WA0007(1).webp","full":"full/ALMATY/IMG-20190916-WA0007(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190916-WA0008(1).webp","full":"full/ALMATY/IMG-20190916-WA0008(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190916-WA0012(1).webp","full":"full/ALMATY/IMG-20190916-WA0012(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190916-WA0019(1).webp","full":"full/ALMATY/IMG-20190916-WA0019(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190917-WA0000(1).webp","full":"full/ALMATY/IMG-20190917-WA0000(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190922-WA0024(1).webp","full":"full/ALMATY/IMG-20190922-WA0024(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190926-WA0009(1).webp","full":"full/ALMATY/IMG-20190926-WA0009(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190926-WA0009.webp","full":"full/ALMATY/IMG-20190926-WA0009.webp"},{"thumb":"thumbs/ALMATY/IMG-20190926-WA0010(1).webp","full":"full/ALMATY/IMG-20190926-WA0010(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20190926-WA0011(1).webp","full":"full/ALMATY/IMG-20190926-WA0011(1).webp"},{"thumb":"thumbs/ALMATY/IMG-20191026-WA0016.webp","full":"full/ALMATY/IMG-20191026-WA0016.webp"},{"thumb":"thumbs/ALMATY/IMG-20191026-WA0017.webp","full":"full/ALMATY/IMG-20191026-WA0017.webp"},{"thumb":"thumbs/ALMATY/IMG-20191026-WA0018.webp","full":"full/ALMATY/IMG-20191026-WA0018.webp"}],[{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0014(1).webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0014(1).webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0014.webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0014.webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0015(1).webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0015(1).webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0015.webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0015.webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0016(1).webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0016(1).webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0016.webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0016.webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0017(1).webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0017(1).webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0017.webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0017.webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0018(1).webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0018(1).webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0018.webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0018.webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0019(1).webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0019(1).webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0019.webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0019.webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0020(1).webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0020(1).webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0020.webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0020.webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0021(1).webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0021(1).webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0021.webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0021.webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0022(1).webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0022(1).webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0023(1).webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0023(1).webp"},{"thumb":"thumbs/AVUKATLIK_OFIS/IMG-20190119-WA0024(1).webp","full":"full/AVUKATLIK_OFIS/IMG-20190119-WA0024(1).webp"}],[{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.18%20(1).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.18%20(1).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.18.webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.18.webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.19%20(1).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.19%20(1).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.19.webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.19.webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.20%20(1).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.20%20(1).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.20%20(2).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.20%20(2).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.20.webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.20.webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.21%20(1).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.21%20(1).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.21%20(2).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.21%20(2).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.21.webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.21.webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.22%20(1).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.22%20(1).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.22%20(2).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.22%20(2).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.22%20(3).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.22%20(3).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.22.webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.22.webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.23%20(1).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.23%20(1).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.23%20(2).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.23%20(2).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.23%20(3).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.23%20(3).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.23.webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.23.webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.24%20(1).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.24%20(1).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.24%20(2).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.24%20(2).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.24%20(3).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.24%20(3).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.24.webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.24.webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.25%20(1).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.25%20(1).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.25%20(2).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.25%20(2).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.25%20(3).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.25%20(3).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.25.webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.25.webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.26%20(1).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.26%20(1).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.26%20(2).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.26%20(2).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.26%20(3).webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.26%20(3).webp"},{"thumb":"thumbs/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.26.webp","full":"full/BEBEK_VILLA/WhatsApp%20Image%202020-03-07%20at%2010.07.26.webp"}],[{"thumb":"thumbs/CIFTLIK_REFERANS/35d6c111-0e1c-400f-a3fc-d6f3eacad772.webp","full":"full/CIFTLIK_REFERANS/35d6c111-0e1c-400f-a3fc-d6f3eacad772.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/627b0d4a-f882-4cfb-98ac-5d80727e1e9b.webp","full":"full/CIFTLIK_REFERANS/627b0d4a-f882-4cfb-98ac-5d80727e1e9b.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/7c0feda0-0bc3-4be3-a316-7f3fd95eca19.webp","full":"full/CIFTLIK_REFERANS/7c0feda0-0bc3-4be3-a316-7f3fd95eca19.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/9180e24e-e70f-42d4-a036-be77c790def7.webp","full":"full/CIFTLIK_REFERANS/9180e24e-e70f-42d4-a036-be77c790def7.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/922ef55e-5942-491b-8a5a-2920c4f987d5.webp","full":"full/CIFTLIK_REFERANS/922ef55e-5942-491b-8a5a-2920c4f987d5.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/BARA%20ARKASI%20RAF.webp","full":"full/CIFTLIK_REFERANS/BARA%20ARKASI%20RAF.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/E5_.webp","full":"full/CIFTLIK_REFERANS/E5_.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/E6_.webp","full":"full/CIFTLIK_REFERANS/E6_.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/E7_.webp","full":"full/CIFTLIK_REFERANS/E7_.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/E8_.webp","full":"full/CIFTLIK_REFERANS/E8_.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/M3.webp","full":"full/CIFTLIK_REFERANS/M3.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.37%20(1).webp","full":"full/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.37%20(1).webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.37%20(2).webp","full":"full/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.37%20(2).webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.37%20(3).webp","full":"full/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.37%20(3).webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.37%20(4).webp","full":"full/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.37%20(4).webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.37%20(5).webp","full":"full/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.37%20(5).webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.41%20(1).webp","full":"full/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.41%20(1).webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.41%20(2).webp","full":"full/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.41%20(2).webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.41.webp","full":"full/CIFTLIK_REFERANS/WhatsApp%20Image%202021-12-07%20at%2017.04.41.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/e1_.webp","full":"full/CIFTLIK_REFERANS/e1_.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/e2_.webp","full":"full/CIFTLIK_REFERANS/e2_.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/e3_.webp","full":"full/CIFTLIK_REFERANS/e3_.webp"},{"thumb":"thumbs/CIFTLIK_REFERANS/e4_.webp","full":"full/CIFTLIK_REFERANS/e4_.webp"}],[{"thumb":"thumbs/DUVAR_PANEL_CALISMALARI/11.webp","full":"full/DUVAR_PANEL_CALISMALARI/11.webp"},{"thumb":"thumbs/DUVAR_PANEL_CALISMALARI/12.webp","full":"full/DUVAR_PANEL_CALISMALARI/12.webp"},{"thumb":"thumbs/DUVAR_PANEL_CALISMALARI/13.webp","full":"full/DUVAR_PANEL_CALISMALARI/13.webp"},{"thumb":"thumbs/DUVAR_PANEL_CALISMALARI/14.webp","full":"full/DUVAR_PANEL_CALISMALARI/14.webp"},{"thumb":"thumbs/DUVAR_PANEL_CALISMALARI/15.webp","full":"full/DUVAR_PANEL_CALISMALARI/15.webp"},{"thumb":"thumbs/DUVAR_PANEL_CALISMALARI/16.webp","full":"full/DUVAR_PANEL_CALISMALARI/16.webp"},{"thumb":"thumbs/DUVAR_PANEL_CALISMALARI/17.webp","full":"full/DUVAR_PANEL_CALISMALARI/17.webp"},{"thumb":"thumbs/DUVAR_PANEL_CALISMALARI/18.webp","full":"full/DUVAR_PANEL_CALISMALARI/18.webp"},{"thumb":"thumbs/DUVAR_PANEL_CALISMALARI/19.webp","full":"full/DUVAR_PANEL_CALISMALARI/19.webp"},{"thumb":"thumbs/DUVAR_PANEL_CALISMALARI/20.webp","full":"full/DUVAR_PANEL_CALISMALARI/20.webp"},{"thumb":"thumbs/DUVAR_PANEL_CALISMALARI/21.webp","full":"full/DUVAR_PANEL_CALISMALARI/21.webp"}],[{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191209-WA0033.webp","full":"full/GOZTEPE_VILLASI/IMG-20191209-WA0033.webp"},{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191209-WA0034.webp","full":"full/GOZTEPE_VILLASI/IMG-20191209-WA0034.webp"},{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191209-WA0039.webp","full":"full/GOZTEPE_VILLASI/IMG-20191209-WA0039.webp"},{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191211-WA0022.webp","full":"full/GOZTEPE_VILLASI/IMG-20191211-WA0022.webp"},{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191211-WA0023.webp","full":"full/GOZTEPE_VILLASI/IMG-20191211-WA0023.webp"},{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191211-WA0024.webp","full":"full/GOZTEPE_VILLASI/IMG-20191211-WA0024.webp"},{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191211-WA0026.webp","full":"full/GOZTEPE_VILLASI/IMG-20191211-WA0026.webp"},{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191211-WA0027.webp","full":"full/GOZTEPE_VILLASI/IMG-20191211-WA0027.webp"},{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191211-WA0028.webp","full":"full/GOZTEPE_VILLASI/IMG-20191211-WA0028.webp"},{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191211-WA0029.webp","full":"full/GOZTEPE_VILLASI/IMG-20191211-WA0029.webp"},{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191211-WA0030.webp","full":"full/GOZTEPE_VILLASI/IMG-20191211-WA0030.webp"},{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191211-WA0032.webp","full":"full/GOZTEPE_VILLASI/IMG-20191211-WA0032.webp"},{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191211-WA0033.webp","full":"full/GOZTEPE_VILLASI/IMG-20191211-WA0033.webp"},{"thumb":"thumbs/GOZTEPE_VILLASI/IMG-20191211-WA0035.webp","full":"full/GOZTEPE_VILLASI/IMG-20191211-WA0035.webp"}],[{"thumb":"thumbs/KARAMURSEL/10_%C3%87ATI%20KATI_EBEVEYN%20YATAK%20ODASI%20(1).webp","full":"full/KARAMURSEL/10_%C3%87ATI%20KATI_EBEVEYN%20YATAK%20ODASI%20(1).webp"},{"thumb":"thumbs/KARAMURSEL/10_%C3%87ATI%20KATI_EBEVEYN%20YATAK%20ODASI%20(2).webp","full":"full/KARAMURSEL/10_%C3%87ATI%20KATI_EBEVEYN%20YATAK%20ODASI%20(2).webp"},{"thumb":"thumbs/KARAMURSEL/10_%C3%87ATI%20KATI_EBEVEYN%20YATAK%20ODASI%20(3).webp","full":"full/KARAMURSEL/10_%C3%87ATI%20KATI_EBEVEYN%20YATAK%20ODASI%20(3).webp"},{"thumb":"thumbs/KARAMURSEL/11_%C3%87ATI%20KATI_EBEVEYN%20BANYO%20(1).webp","full":"full/KARAMURSEL/11_%C3%87ATI%20KATI_EBEVEYN%20BANYO%20(1).webp"},{"thumb":"thumbs/KARAMURSEL/11_%C3%87ATI%20KATI_EBEVEYN%20BANYO%20(2).webp","full":"full/KARAMURSEL/11_%C3%87ATI%20KATI_EBEVEYN%20BANYO%20(2).webp"},{"thumb":"thumbs/KARAMURSEL/12_%C3%87ATI%20KATI_%C3%87OCUK%20ODASI%20(1).webp","full":"full/KARAMURSEL/12_%C3%87ATI%20KATI_%C3%87OCUK%20ODASI%20(1).webp"},{"thumb":"thumbs/KARAMURSEL/12_%C3%87ATI%20KATI_%C3%87OCUK%20ODASI%20(2).webp","full":"full/KARAMURSEL/12_%C3%87ATI%20KATI_%C3%87OCUK%20ODASI%20(2).webp"},{"thumb":"thumbs/KARAMURSEL/12_%C3%87ATI%20KATI_%C3%87OCUK%20ODASI%20(3).webp","full":"full/KARAMURSEL/12_%C3%87ATI%20KATI_%C3%87OCUK%20ODASI%20(3).webp"},{"thumb":"thumbs/KARAMURSEL/13_%C3%87ATI%20KATI_%C3%87OCUK%20ODASI_ALT%20(1).webp","full":"full/KARAMURSEL/13_%C3%87ATI%20KATI_%C3%87OCUK%20ODASI_ALT%20(1).webp"},{"thumb":"thumbs/KARAMURSEL/13_%C3%87ATI%20KATI_%C3%87OCUK%20ODASI_ALT%20(2).webp","full":"full/KARAMURSEL/13_%C3%87ATI%20KATI_%C3%87OCUK%20ODASI_ALT%20(2).webp"},{"thumb":"thumbs/KARAMURSEL/13_%C3%87ATI%20KATI_%C3%87OCUK%20ODASI_ALT%20(3).webp","full":"full/KARAMURSEL/13_%C3%87ATI%20KATI_%C3%87OCUK%20ODASI_ALT%20(3).webp"},{"thumb":"thumbs/KARAMURSEL/14_1.KAT_%C3%87OCUK%20ODASI%20(1).webp","full":"full/KARAMURSEL/14_1.KAT_%C3%87OCUK%20ODASI%20(1).webp"},{"thumb":"thumbs/KARAMURSEL/14_1.KAT_%C3%87OCUK%20ODASI%20(2).webp","full":"full/KARAMURSEL/14_1.KAT_%C3%87OCUK%20ODASI%20(2).webp"},{"thumb":"thumbs/KARAMURSEL/14_1.KAT_%C3%87OCUK%20ODASI%20(3).webp","full":"full/KARAMURSEL/14_1.KAT_%C3%87OCUK%20ODASI%20(3).webp"},{"thumb":"thumbs/KARAMURSEL/15_%C3%87ATI%20KATI_%C3%87OCUK%20BANYO%20(1).webp","full":"full/KARAMURSEL/15_%C3%87ATI%20KATI_%C3%87OCUK%20BANYO%20(1).webp"},{"thumb":"thumbs/KARAMURSEL/15_%C3%87ATI%20KATI_%C3%87OCUK%20BANYO%20(2).webp","full":"full/KARAMURSEL/15_%C3%87ATI%20KATI_%C3%87OCUK%20BANYO%20(2).webp"},{"thumb":"thumbs/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(1).webp","full":"full/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(1).webp"},{"thumb":"thumbs/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(2).webp","full":"full/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(2).webp"},{"thumb":"thumbs/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(3).webp","full":"full/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(3).webp"},{"thumb":"thumbs/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(4).webp","full":"full/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(4).webp"},{"thumb":"thumbs/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(5).webp","full":"full/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(5).webp"},{"thumb":"thumbs/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(6).webp","full":"full/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(6).webp"},{"thumb":"thumbs/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(7).webp","full":"full/KARAMURSEL/1_BAH%C3%87E%20KATI_SALON%20(7).webp"},{"thumb":"thumbs/KARAMURSEL/2_BAH%C3%87E%20KATI_MUTFAK%20(1).webp","full":"full/KARAMURSEL/2_BAH%C3%87E%20KATI_MUTFAK%20(1).webp"},{"thumb":"thumbs/KARAMURSEL/2_BAH%C3%87E%20KATI_MUTFAK%20(2).webp","full":"full/KARAMURSEL/2_BAH%C3%87E%20KATI_MUTFAK%20(2).webp"},{"thumb":"thumbs/KARAMURSEL/2_BAH%C3%87E%20KATI_MUTFAK%20(3).webp","full":"full/KARAMURSEL/2_BAH%C3%87E%20KATI_MUTFAK%20(3).webp"},{"thumb":"thumbs/KARAMURSEL/3_BAH%C3%87E%20KATI_BANYO%20(1).webp","full":"full/KARAMURSEL/3_BAH%C3%87E%20KATI_BANYO%20(1).webp"},{"thumb":"thumbs/KARAMURSEL/3_BAH%C3%87E%20KATI_BANYO%20(2).webp","full":"full/KARAMURSEL/3_BAH%C3%87E%20KATI_BANYO%20(2).webp"},{"thumb":"thumbs/KARAMURSEL/3_BAH%C3%87E%20KATI_BANYO%20(3).webp","full":"full/KARAMURSEL/3_BAH%C3%87E%20KATI_BANYO%20(3).webp"},{"thumb":"thumbs/KARAMURSEL/3_BAH%C3%87E%20KATI_BANYO%20(4).webp","full":"full/KARAMURSEL/3_BAH%C3%87E%20KATI_BANYO%20(4).webp"},{"thumb":"thumbs/KARAMURSEL/4_G%C4%B0R%C4%B0%C5%9E%20KATI_KOR%C4%B0DOR%20(1).webp","full":"full/KARAMURSEL/4_G%C4%B0R%C4%B0%C5%9E%20KATI_KOR%C4%B0DOR%20(1).webp"},{"thumb":"thumbs/KARAMURSEL/4_G%C4%B0R%C4%B0%C5%9E%20KATI_KOR%C4%B0DOR%20(2).webp","full":"full/KARAMURSEL/4_G%C4%B0R%C4%B0%C5%9E%20KATI_KOR%C4%B0DOR%20(2).webp"},{"thumb":"thumbs/KARAMURSEL/4_G%C4%B0R%C4%B0%C5%9E%20KATI_KOR%C4%B0DOR%20(7).webp","full":"full/KARAMURSEL/4_G%C4%B0R%C4%B0%C5%9E%20KATI_KOR%C4%B0DOR%20(7).webp"},{"thumb":"thumbs/KARAMURSEL/5_G%C4%B0R%C4%B0%C5%9E%20KAT_SALON.webp","full":"full/KARAMURSEL/5_G%C4%B0R%C4%B0%C5%9E%20KAT_SALON.webp"},{"thumb":"thumbs/KARAMURSEL/6_G%C4%B0R%C4%B0%C5%9E%20KATI_M%C4%B0SAF%C4%B0R%20ODASI.webp","full":"full/KARAMURSEL/6_G%C4%B0R%C4%B0%C5%9E%20KATI_M%C4%B0SAF%C4%B0R%20ODASI.webp"},{"thumb":"thumbs/KARAMURSEL/7_G%C4%B0R%C4%B0%C5%9E%20KATI_M%C4%B0SAF%C4%B0R%20ODASI%20BANYO.webp","full":"full/KARAMURSEL/7_G%C4%B0R%C4%B0%C5%9E%20KATI_M%C4%B0SAF%C4%B0R%20ODASI%20BANYO.webp"},{"thumb":"thumbs/KARAMURSEL/8_G%C4%B0R%C4%B0%C5%9E%20KATI_ANA%20BANYO.webp","full":"full/KARAMURSEL/8_G%C4%B0R%C4%B0%C5%9E%20KATI_ANA%20BANYO.webp"},{"thumb":"thumbs/KARAMURSEL/9_G%C4%B0R%C4%B0%C5%9E%20KATI_%C3%87AMA%C5%9EIR%20ODASI.webp","full":"full/KARAMURSEL/9_G%C4%B0R%C4%B0%C5%9E%20KATI_%C3%87AMA%C5%9EIR%20ODASI.webp"}],[{"thumb":"thumbs/KARBOSAN/WhatsApp%20Image%202021-11-15%20at%2008.54.19%20(1).webp","full":"full/KARBOSAN/WhatsApp%20Image%202021-11-15%20at%2008.54.19%20(1).webp"},{"thumb":"thumbs/KARBOSAN/WhatsApp%20Image%202021-11-15%20at%2008.54.19.webp","full":"full/KARBOSAN/WhatsApp%20Image%202021-11-15%20at%2008.54.19.webp"},{"thumb":"thumbs/KARBOSAN/WhatsApp%20Image%202021-11-16%20at%2012.07.34.webp","full":"full/KARBOSAN/WhatsApp%20Image%202021-11-16%20at%2012.07.34.webp"},{"thumb":"thumbs/KARBOSAN/WhatsApp%20Image%202021-11-16%20at%2018.39.23%20(1).webp","full":"full/KARBOSAN/WhatsApp%20Image%202021-11-16%20at%2018.39.23%20(1).webp"},{"thumb":"thumbs/KARBOSAN/WhatsApp%20Image%202021-11-16%20at%2018.39.23.webp","full":"full/KARBOSAN/WhatsApp%20Image%202021-11-16%20at%2018.39.23.webp"},{"thumb":"thumbs/KARBOSAN/WhatsApp%20Image%202021-11-16%20at%2018.39.24%20(1).webp","full":"full/KARBOSAN/WhatsApp%20Image%202021-11-16%20at%2018.39.24%20(1).webp"},{"thumb":"thumbs/KARBOSAN/WhatsApp%20Image%202021-11-16%20at%2018.39.24.webp","full":"full/KARBOSAN/WhatsApp%20Image%202021-11-16%20at%2018.39.24.webp"},{"thumb":"thumbs/KARBOSAN/WhatsApp%20Image%202021-11-16%20at%2018.56.36.webp","full":"full/KARBOSAN/WhatsApp%20Image%202021-11-16%20at%2018.56.36.webp"},{"thumb":"thumbs/KARBOSAN/WhatsApp%20Image%202021-11-17%20at%2014.28.43.webp","full":"full/KARBOSAN/WhatsApp%20Image%202021-11-17%20at%2014.28.43.webp"},{"thumb":"thumbs/KARBOSAN/WhatsApp%20Image%202021-11-17%20at%2014.28.44.webp","full":"full/KARBOSAN/WhatsApp%20Image%202021-11-17%20at%2014.28.44.webp"},{"thumb":"thumbs/KARBOSAN/WhatsApp%20Image%202021-11-17%20at%2015.43.08.webp","full":"full/KARBOSAN/WhatsApp%20Image%202021-11-17%20at%2015.43.08.webp"},{"thumb":"thumbs/KARBOSAN/WhatsApp%20Image%202021-11-20%20at%2015.59.44.webp","full":"full/KARBOSAN/WhatsApp%20Image%202021-11-20%20at%2015.59.44.webp"},{"thumb":"thumbs/KARBOSAN/camduvar%20.webp","full":"full/KARBOSAN/camduvar%20.webp"},{"thumb":"thumbs/KARBOSAN/kolon%20raf%C4%B1%20.webp","full":"full/KARBOSAN/kolon%20raf%C4%B1%20.webp"}],[{"thumb":"thumbs/LOKUMHANE/IMG-20190305-WA0026.webp","full":"full/LOKUMHANE/IMG-20190305-WA0026.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190307-WA0004.webp","full":"full/LOKUMHANE/IMG-20190307-WA0004.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190307-WA0005(1).webp","full":"full/LOKUMHANE/IMG-20190307-WA0005(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190307-WA0005.webp","full":"full/LOKUMHANE/IMG-20190307-WA0005.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190308-WA0026(1).webp","full":"full/LOKUMHANE/IMG-20190308-WA0026(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190308-WA0026.webp","full":"full/LOKUMHANE/IMG-20190308-WA0026.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190308-WA0028(1).webp","full":"full/LOKUMHANE/IMG-20190308-WA0028(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190308-WA0028.webp","full":"full/LOKUMHANE/IMG-20190308-WA0028.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190309-WA0015(1).webp","full":"full/LOKUMHANE/IMG-20190309-WA0015(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190309-WA0015.webp","full":"full/LOKUMHANE/IMG-20190309-WA0015.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190309-WA0016(1).webp","full":"full/LOKUMHANE/IMG-20190309-WA0016(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190309-WA0016.webp","full":"full/LOKUMHANE/IMG-20190309-WA0016.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190309-WA0017(1).webp","full":"full/LOKUMHANE/IMG-20190309-WA0017(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190309-WA0017.webp","full":"full/LOKUMHANE/IMG-20190309-WA0017.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190309-WA0018(1).webp","full":"full/LOKUMHANE/IMG-20190309-WA0018(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190309-WA0018.webp","full":"full/LOKUMHANE/IMG-20190309-WA0018.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190311-WA0004(1).webp","full":"full/LOKUMHANE/IMG-20190311-WA0004(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190311-WA0004.webp","full":"full/LOKUMHANE/IMG-20190311-WA0004.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190311-WA0005(1).webp","full":"full/LOKUMHANE/IMG-20190311-WA0005(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190311-WA0005.webp","full":"full/LOKUMHANE/IMG-20190311-WA0005.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190311-WA0006(1).webp","full":"full/LOKUMHANE/IMG-20190311-WA0006(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190311-WA0006.webp","full":"full/LOKUMHANE/IMG-20190311-WA0006.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190311-WA0008(1).webp","full":"full/LOKUMHANE/IMG-20190311-WA0008(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190311-WA0008.webp","full":"full/LOKUMHANE/IMG-20190311-WA0008.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190311-WA0027(1).webp","full":"full/LOKUMHANE/IMG-20190311-WA0027(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190311-WA0027.webp","full":"full/LOKUMHANE/IMG-20190311-WA0027.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190311-WA0028(1).webp","full":"full/LOKUMHANE/IMG-20190311-WA0028(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190311-WA0028.webp","full":"full/LOKUMHANE/IMG-20190311-WA0028.webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190314-WA0020(1).webp","full":"full/LOKUMHANE/IMG-20190314-WA0020(1).webp"},{"thumb":"thumbs/LOKUMHANE/IMG-20190314-WA0020.webp","full":"full/LOKUMHANE/IMG-20190314-WA0020.webp"}],[{"thumb":"thumbs/ZURICH/IMG-20190203-WA0059(1).webp","full":"full/ZURICH/IMG-20190203-WA0059(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0060(1).webp","full":"full/ZURICH/IMG-20190203-WA0060(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0061(1).webp","full":"full/ZURICH/IMG-20190203-WA0061(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0064(1).webp","full":"full/ZURICH/IMG-20190203-WA0064(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0065(1).webp","full":"full/ZURICH/IMG-20190203-WA0065(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0066(1).webp","full":"full/ZURICH/IMG-20190203-WA0066(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0068(1).webp","full":"full/ZURICH/IMG-20190203-WA0068(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0072(1).webp","full":"full/ZURICH/IMG-20190203-WA0072(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0074(1).webp","full":"full/ZURICH/IMG-20190203-WA0074(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0075(1).webp","full":"full/ZURICH/IMG-20190203-WA0075(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0076(1).webp","full":"full/ZURICH/IMG-20190203-WA0076(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0078(1).webp","full":"full/ZURICH/IMG-20190203-WA0078(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0080(1).webp","full":"full/ZURICH/IMG-20190203-WA0080(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0085.webp","full":"full/ZURICH/IMG-20190203-WA0085.webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0086(1).webp","full":"full/ZURICH/IMG-20190203-WA0086(1).webp"},{"thumb":"thumbs/ZURICH/IMG-20190203-WA0086.webp","full":"full/ZURICH/IMG-20190203-WA0086.webp"}]];
+    const PASS_HASH = "5113ee86dfd86f256e3ab4a37542075c4ae431e7fc4639fcc2cf4699e448460b";
+    let currentGroup = 0;
+    let currentIndex = 0;
+
+    async function sha256Hex(text) {
+      const data = new TextEncoder().encode(text);
+      const digest = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function renderGallery() {
+      document.querySelectorAll('.grid').forEach((grid) => {
+        const group = Number(grid.dataset.group);
+        galleries[group].forEach((entry, idx) => {
+          const wrap = document.createElement('div');
+          wrap.className = 'thumb';
+          wrap.onclick = () => openLightbox(group, idx);
+          const img = document.createElement('img');
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          img.src = entry.thumb;
+          wrap.appendChild(img);
+          grid.appendChild(wrap);
+        });
+      });
+    }
+
+    async function tryUnlock() {
+      const input = document.getElementById('gate-pass');
+      const hash = await sha256Hex(input.value);
+      if (hash === PASS_HASH) {
+        document.getElementById('gate').classList.add('hidden');
+        document.getElementById('site').classList.remove('hidden');
+        renderGallery();
+        try { sessionStorage.setItem('decotech-unlocked', '1'); } catch (e) {}
+      } else {
+        document.getElementById('gate-error').textContent = 'Hatali sifre.';
+      }
+    }
+
+    document.getElementById('gate-pass').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') tryUnlock();
+    });
+
+    (function checkSession() {
+      try {
+        if (sessionStorage.getItem('decotech-unlocked') === '1') {
+          document.getElementById('gate').classList.add('hidden');
+          document.getElementById('site').classList.remove('hidden');
+          renderGallery();
+        }
+      } catch (e) {}
+    })();
+
+    function updateLightbox() {
+      const list = galleries[currentGroup];
+      document.getElementById('lightbox-img').src = list[currentIndex].full;
+      document.getElementById('lightbox-counter').textContent = (currentIndex + 1) + ' / ' + list.length;
+    }
+
+    function openLightbox(group, index) {
+      currentGroup = group;
+      currentIndex = index;
+      updateLightbox();
+      document.getElementById('lightbox').classList.add('open');
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+    }
+
+    function stepLightbox(delta) {
+      const list = galleries[currentGroup];
+      currentIndex = (currentIndex + delta + list.length) % list.length;
+      updateLightbox();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (!document.getElementById('lightbox').classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') stepLightbox(-1);
+      if (e.key === 'ArrowRight') stepLightbox(1);
+    });
+  </script>
+</body>
+</html>
